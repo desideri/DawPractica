@@ -1,0 +1,22 @@
+{% spaceless %}
+[
+  {% for o in orders %}
+  {
+    "OrderId":"{{o.orderid}}",
+    "CustomerId":"{{o.customerid}}",
+    "EmployeeID":"{{o.employeeid}}",
+    "OrderDate":"{{o.orderdate}}",
+    "RequiredDate":"{{o.requireddate}}",
+    "ShippedDate":"{{o.shippeddate}}",
+    "ShipVia":"{{o.shipvia}}",
+    "Freight":"{{o.freight}}",
+    "ShipName":"{{o.shipname}}",
+    "ShipAddress":"{{o.shipaddress}}",
+    "ShipCity":"{{o.shipcity}}",
+    "ShipRegion":"{{o.shipregion}}",
+    "ShipPostalCode":"{{o.shippostalcode}}",
+    "ShipCountry":"{{o.shipcountry}}"
+    }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+]
+{% endspaceless %}

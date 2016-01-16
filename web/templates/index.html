@@ -1,0 +1,149 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+{% if form.errors %}
+        <p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<html lang="en">
+
+  <head>
+    <title>Practica Daw </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "css/principal.css" %}">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".navbar" data-offset="50">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            {% if request.user.is_authenticated %}
+            <ul class="nav navbar-nav">
+
+              <li><a href="{% url 'web.views.vclientes' %}">Consultar-Ordenes</a></li>
+              <li><a href="">Consultar-Orden-Cliente</a></li>
+              <li><a href="">Insertar</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a>
+                {{ request.user }}</a>
+              </li>
+              <li>
+                <a href="/logout/">Cerrar sesi&oacuten</a>
+              </li>
+            </ul>
+            {% else %}
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#myModal" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-pencil"></span> Sign Up</a></li>
+            </ul>
+            <!--Log in Begin-->
+            <ul id="signInDropdown" class="nav navbar-nav navbar-right">
+                      <li class="dropdown">
+                         <a class="dropdown-toggle" href="#" data-toggle="dropdown" id="navLogin"><span class="glyphicon glyphicon-user"></span>Login</a>
+                          <ul class="dropdown-menu">
+                            <li style="width: 250px;">
+                              {{ state }}
+                                  <div class="navbar-form form" role="form">
+                                    {% csrf_token %}
+                                      {% if next %}
+                                  		<input type="hidden" name="next" value="{{ next }}" />
+                                  		{% endif %}
+                                      <!--COMIENZA LOG IN-->
+                                      <div class="form-group">
+                                        <div class="input-group">
+                                              <span class="input-group-addon"><i class="glyphicon glyphicon-user color-blue"></i></span>
+
+                                              <input id="userInput"  name= "username" value="{{ username}}" placeholder="username" class="form-control" type="text" required="">
+                                          </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <div class="input-group">
+                                              <span class="input-group-addon"><i class="glyphicon glyphicon-lock color-blue"></i></span>
+                                              <input  id="passwordInput" name="password" value="" placeholder="password" class="form-control" type="password" oninvalid="setCustomValidity('Please enter a password!')" onchange="try{setCustomValidity('')}catch(e){}" required="">
+                                          </div>
+                                      </div>
+                                    </br></br>
+                                      <div class="form-group">
+                                        <p style="text-align:center;">  <input class="btn btn-primary" type="submit" value="login" id="button_login" name="login" href=""/></p>
+                                      </div>
+                                       <!--TERMINA LOG IN-->
+                                  </div>
+                              </li>
+                          </ul>
+                      </li>
+                      {% endif %}
+                  </ul>
+          </div>
+      </div>
+    </nav>
+
+    <!--CUERPO-->
+    </br></br></br></br></br></br>
+    <div class="container-fluid text-center">
+      <div class="row content">
+      <div class="col-sm-2 sidenav">
+      </div>
+      <div class="col-sm-8 text-left">
+      <div class="panel panel-default">
+
+        <div class="panel-body">
+          {% if request.user.is_authenticated %}
+
+            <h1 style="text-align:center;">Bienvenido</h1>
+            <h2 style="text-align:center;">{{ request.user }}</h2>
+          {% else %}
+            <h1>Inicie sesion para poder Consultar,Eliminar y Insertar Datos.</h1>
+          {% endif %}
+        </div>
+      </div>
+      <!--FIN DEL PANEL--></div>
+    </div>
+    </div>
+    <!--FIN-->
+
+  </body>
+  <script>
+    $(document).ready(function(){
+      $('#button_login').click(function(event){
+        event.preventDefault();
+        var user = $('#userInput').val();
+        var pwd = $('#passwordInput').val();
+        var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+        console.log(user);
+        console.log(csrf);
+        $.ajax({
+          type: "POST",
+          url:  "/login/",
+          data: {
+            'user':user,
+            'pwd':pwd,
+            'csrfmiddlewaretoken': csrf
+          },
+          success: function( data ) {
+            console.log('guardado');
+            window.location = "/";
+          },
+          error: function(data){
+            console.log(data);
+            alert("Error Usuario/Contraseña")
+          }
+        });
+      });
+    });
+  </script>
+
+</html>

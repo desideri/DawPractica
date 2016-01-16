@@ -1,0 +1,206 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+{% if form.errors %}
+        <p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<html lang="en">
+
+  <head>
+    <title>Practica Daw </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "css/principal.css" %}">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".navbar" data-offset="50">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            {% if request.user.is_authenticated %}
+            <ul class="nav navbar-nav">
+              <li><a href="{% url 'web.views.verclientes' %}">Consultar-Ordenes</a></li>
+              <li><a href="#myModal" data-toggle="modal" data-target="#myModal">Consultar-Orden-Cliente</a></li>
+              <li><a href="#">Insertar</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a>
+                {{ request.user }}</a>
+              </li>
+              <li>
+                <a href="/logout/">Cerrar sesi&oacuten</a>
+              </li>
+            </ul>
+            {% else %}
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#myModal" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-pencil"></span> Sign Up</a></li>
+            </ul>
+            <!--Log in Begin-->
+            <ul id="signInDropdown" class="nav navbar-nav navbar-right">
+                      <li class="dropdown">
+                         <a class="dropdown-toggle" href="#" data-toggle="dropdown" id="navLogin"><span class="glyphicon glyphicon-user"></span>Login</a>
+                          <ul class="dropdown-menu">
+                            <li style="width: 250px;">
+                              {{ state }}
+                                  <div class="navbar-form form" role="form">
+                                    {% csrf_token %}
+                                      {% if next %}
+                                  		<input type="hidden" name="next" value="{{ next }}" />
+                                  		{% endif %}
+                                      <!--COMIENZA LOG IN-->
+                                      <div class="form-group">
+                                        <div class="input-group">
+                                              <span class="input-group-addon"><i class="glyphicon glyphicon-user color-blue"></i></span>
+
+                                              <input id="userInput"  name= "username" value="{{ username}}" placeholder="username" class="form-control" type="text" required="">
+                                          </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <div class="input-group">
+                                              <span class="input-group-addon"><i class="glyphicon glyphicon-lock color-blue"></i></span>
+                                              <input  id="passwordInput" name="password" value="" placeholder="password" class="form-control" type="password" oninvalid="setCustomValidity('Please enter a password!')" onchange="try{setCustomValidity('')}catch(e){}" required="">
+                                          </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <input class="btn btn-primary" type="submit" value="login" id="button_login" name="login" href=""/>
+                                      </div>
+                                       <!--TERMINA LOG IN-->
+                                  </div>
+                              </li>
+                          </ul>
+                      </li>
+                      {% endif %}
+                  </ul>
+          </div>
+      </div>
+    </nav>
+
+    <!--CUERPO-->
+    </br></br></br></br></br></br>
+    <div class="container-fluid text-center">
+      <div class="row content">
+
+      <div class="col-sm-12 text-left">
+          <h1>Consulta Ordenes</h1>
+      <div class="panel panel-default">
+
+      <div>
+      </br></br></br>
+      <table class="table" id="example" class="display">
+        <thead>
+          <tr>
+            <th>OrderID</th>
+            <th>CustomerID</th>
+            <th>EmployeeID</th>
+            <th>OrderDate</th>
+            <th>RequiredDate</th>
+            <th>ShippedDate</th>
+            <th>ShipVia</th>
+            <th>Freight</th>
+            <th>ShipName</th>
+            <th>ShipAddress</th>
+            <th>ShipCity</th>
+            <th>ShipRegion</th>
+            <th>ShipPostalCode</th>
+            <th>ShipCountry</th>
+            <th>Eliminar</th>
+            <th>Modificar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td>{{order.orderid}}</td>
+            <td>{{order.customerid}}</td>
+            <td>{{order.employeeid}}</td>
+            <td>{{order.orderdate}}</td>
+            <td>{{order.requireddate}}</td>
+            <td>{{order.shippeddate}}</td>
+            <td>{{order.shipvia}}</td>
+            <td>{{order.freight}}</td>
+            <td>{{order.shipname}}</td>
+            <td>{{order.shipaddress}}</td>
+            <td>{{order.shipcity}}</td>
+            <td>{{order.shipregion}}</td>
+            <td>{{order.shippostalcode}}</td>
+            <td>{{order.shipcountry}}</td>
+            <td><a href="#"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            <td><a href="#"><span class="glyphicon glyphicon-remove"></span></a></td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+
+      </div>
+
+      <div class="pagination">
+          <span class="step-links">
+              {% if orders.has_previous %}
+                  <a href="?page={{ orders.previous_page_number }}">previous</a>
+              {% endif %}
+
+              <span class="current">
+                  Page {{ orders.number }} of {{ orders.paginator.num_pages }}.
+              </span>
+
+              {% if orders.has_next %}
+                  <a href="?page={{ orders.next_page_number }}">next</a>
+              {% endif %}
+          </span>
+      </div>
+
+      <div class="modal fade" id="myModal">
+         <div class="modal-dialog">
+           <div class="modal-content">
+             <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+               <h4 class="modal-title">Consultar Orden-Cliente</h4>
+             </div>
+             <div class="modal-body">
+               <div class="form-group">
+                 <label for="cargarCliente"> Cliente: </label>
+                 <input class="form-control" id="txtCliente" placeholder="CustomerID" type="text">  <!--FALTA Bootstrap File Input -->
+               </div>
+             </div>
+             <div class="modal-footer">
+                <input class="btn btn-primary" type="submit" value="Consultar" id="btnConsultar" name="btnConsultar" href=""/>
+             </div>
+           </div>
+         </div>
+     </div>
+
+    </div>
+    </div>
+    <!--FIN-->
+
+  </body>
+  <script>
+    $(document).ready(function(){
+      $('#btnConsultar').click(function(event){
+        event.preventDefault();
+        var cliente = $('#txtCliente').val();
+        var csrf2 = $('input[name="csrfmiddlewaretoken"]').val();
+        console.log(cliente);
+        console.log(csrf2);
+          window.location = "/clientes/?cliente="+cliente;
+      });
+
+    });
+  </script>
+</html>

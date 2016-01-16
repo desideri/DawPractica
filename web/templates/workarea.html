@@ -1,0 +1,352 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Ejemplo de HTML5" />
+    <meta name="keywords" content="HTML5, CSS3, Javascript" />
+    <link rel="stylesheet" href="{% static "w2.css" %}">
+    <link rel="stylesheet" href="{% static "css/principal.css" %}">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"  rel="stylesheet">
+    <script type="text/javascript" src= "http://d3js.org/d3.v3.js" charset="utf-8"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" ></script>
+    <script type= "text/javascript" src="http://code.jquery.com/jquery-1.9.1.js" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" ></script>
+    <script type= "text/javascript" src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+
+    <script type= "text/javascript">
+          $(document).on('ready', function () {
+            var template = 0, svg, objeto1, objeto2, newel;
+            $('#save').on('click', function(){
+              var div = document.createElement("div");
+              div.setAttribute("height", "500px");
+              div.setAttribute("weight", "500px");
+              var svg2=document.createElementNS("img","imagen");
+              svg2.setAttribute("width","300");
+              svg2.setAttribute("height","500");
+              svg2.setAttribute("src", "Resources/bg.svg");
+              var lienzo = d3.select(div)
+                .append("svg")
+                .attr({
+                  "width":600,
+                  "id": svg,
+                  "height":400
+                });
+              lienzo.node().appendChild(svg2);
+              $("#carrito").append(lienzo);
+              alert("SVG creado con éxito");
+              $("#carrito").empty();
+            });
+            $('.Paleta').draggable({
+              cursor: "move",
+              helper: 'clone'
+            });
+            $('#carrito').droppable({
+              accept: '.Paleta',
+              drop: eventoDrop
+            });
+            function eventoDrop(evento, ui) {
+              var on =0;
+              $("#plabel").empty();
+              if(ui.draggable.attr("class")!= "clone"){
+                var draggable = ui.draggable.clone(); }
+              draggable.attr("class", "clone");
+              draggable.on('dblclick', function(){
+                $(this).remove();
+              });
+              draggable.on('mouseover', function(){
+                $(this).css("background-color", "blue");
+                $(this).on('click', function(){
+                  $(this).draggable();
+                });
+              });
+              draggable.on('mouseleave', function(){
+                $(this).css("background-color","white");
+              });
+              $("#carrito").append(draggable);
+            }
+            /*SVG*/
+            $("#btnCargar").click(function () {
+              $.get($("#cargarArchivo").val(), function (d) {
+                var svg, objeto, img;
+                objeto = $("<object></object>");
+                objeto.attr("type", "image/svg+xml");
+                objeto.attr("data", "Resources/t1.svg");
+                $("#carrito").append(objeto);
+              });
+            });
+          });
+          function load()
+          {
+            var  btn;
+            btn = document.getElementById("new");
+            btnLabel = document.getElementById("crearLabel");
+            btn.addEventListener("click", verImagen, false);
+            btnLabel.addEventListener("click", crearLabel, false);
+            <!--document.getElementById("save").addEventListener("click", guardarSvg, false);
+          }
+          function guardarSvg(){
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' +
+                encodeURIComponent(document.getElementById("svg").getAttribute("data")
+                  ));
+            element.setAttribute('download', "salida.svg");
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+          }
+          function crearLabel(){
+            var label = document.getElementById("nombreTabla");
+            var div= document.getElementById("dragLabeldiv");
+            div.setAttribute("display", "inline");
+            var p= document.getElementById("plabel");
+            var node = document.createTextNode(label.value);
+            p.appendChild(node);
+            label.value = "";
+          }
+          function verImagen(){
+            var svgContainer = document.getElementById ("carrito");
+            var svg   = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            var svgNS = svg.namespaceURI;
+          }
+          window.addEventListener("load", load, false);
+    </script>
+    <title>Diagramas ER</title>
+  </head>
+  <body>
+    <!--BARRA DE MENÚ -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <a class="navbar-brand" href="#"><img src="{% static "img/logo1.png" %}" class="img-circle" alt="ICO-BRAND" width="30" height="30"></a>
+        </div>
+        <div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+              <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> Home<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">About Us</a></li>
+                </ul>
+              </li>
+              <li><a id= "new" href="#">New</a></li>
+              <li><a href="#myModal" data-toggle="modal" data-target="#myModal">Open</a></li>
+              <li><a id= "save" href="#">Save</a></li>
+              <li><a href="#">Undo</a></li>
+              <li><a href="#">Redo</a></li>
+              <li><a href="#">Share</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span>
+                {{ request.user }} <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/logout/" target="_top">log out</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!--+AREA CENTRAL -->
+    <br> <br>
+    <div class="container-fluid text-center">
+      <div class="row content">
+        <div class="col-sm-2 sidenav">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <i class="more-less glyphicon glyphicon-plus"></i>
+                    Tablas
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                  <div class="list-group">
+                    <!--  <img class="Paleta", src="http://upload.wikimedia.org/wikipedia/commons/a/a0/Circle_-_black_simple.svg"> </img>
+                      <!--<img class="Paleta", src="http://imgh.us/bg_23.svg"> </img>-->
+
+                      <img class="Paleta", src="{% static "Resources/t1.svg" %}"> </img>
+                      <img class="Paleta", src="{% static "Resources/t2.svg" %}"> </img>
+                      <img class="Paleta", src="{% static "Resources/t3.svg" %}"> </img>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <i class="more-less glyphicon glyphicon-plus"></i>
+                    Relaciones
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                  <div class="list-group">
+                    <img class="Paleta", src="{% static "Resources/t4.svg" %}"> </img>
+                    <img class="Paleta", src="{% static "Resources/t5.svg" %}"> </img>
+                    <img class="Paleta", src="{% static "Resources/t6.svg" %}"> </img>
+                    <img class="Paleta", src="{% static "Resources/t7.svg" %}"> </img>
+                    <img class="Paleta", src="{% static "Resources/t8.svg" %}"> </img>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="panelLabel" class="panel panel-default form-group">
+              <label for="label">Nombre de Tabla:</label>
+              <input id="nombreTabla" type="text" class="form-control" id="label">
+              <button id="crearLabel" type="button" class="btn btn-success">Crear</button>
+            </div>
+            <div id="dragLabeldiv" class="Paleta" width="50px">
+              <p id="plabel"></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-7 text-left">
+          <!--TABS-->
+          <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#hoja1">Hoja 1</a></li>
+            <li><a data-toggle="tab" href="#hoja2">Hoja 2</a></li>
+            <li><a data-toggle="tab" href="#hoja3">Hoja 3</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="hoja1" class="tab-pane fade in active">
+            </div>
+            <div id="hoja2" class="tab-pane fade">
+            </div>
+            <div id="hoja3" class="tab-pane fade">
+            </div>
+          </div>
+          <div id= "carrito" class="droppableCar" align="left" >
+            <!--<img id="lienzo" src = "Resources/a.svg" width= "300" height="300"> </img> -->
+          </div>
+        </div>
+        <!--CHAT-->
+        <div class="col-sm-3 sidenav">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> Chat
+                    <div class="btn-group pull-right">
+                      <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                      </button>
+                      <ul class="dropdown-menu slidedown">
+                        <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-refresh">
+                            </span>Refresh</a>
+                        </li>
+                        <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-ok-sign">
+                            </span>Available</a>
+                        </li>
+                        <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-remove">
+                            </span>Busy</a>
+                        </li>
+                        <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-time"></span>
+                            Away</a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-off"></span>
+                            Sign Out</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="panel-body">
+                    <ul class="chat">
+                      <li class="left clearfix"><span class="chat-img pull-left">
+                          <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
+                        </span>
+                        <div class="chat-body clearfix">
+                          <div class="header">
+                            <strong class="primary-font">Joyce Sarmiento</strong> <small class="pull-right text-muted">
+                              <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
+                          </div>
+                          <p>
+                          Texto Joyce
+                          </p>
+                        </div>
+                      </li>
+                      <li class="right clearfix"><span class="chat-img pull-right">
+                          <img src="http://placehold.it/50/FA6F57/fff&text=ME" alt="User Avatar" class="img-circle" />
+                        </span>
+                        <div class="chat-body clearfix">
+                          <div class="header">
+                            <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>13 mins ago</small>
+                            <strong class="pull-right primary-font">Kattya Desiderio</strong>
+                          </div>
+                          <p>
+                          Texto Kattya
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="panel-footer">
+                    <div class="input-group">
+                      <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                      <span class="input-group-btn">
+                        <button class="btn btn-warning btn-sm" id="btn-chat">
+                          Send</button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--END CHAT-->
+        </div>
+      </div>
+    </div>
+    <!--END CONTAINER-->
+    <footer>
+      <small>Proyecto DAW &copy; 2015</small>
+      <hr>
+      <div class="text-center center-block">
+        <p class="txt-railway">- Modelador -</p>
+        <br />
+        <a href="https://www.facebook.com"><i id="social-fb" class="fa fa-facebook-square fa-3x social"></i></a>
+        <a href="https://twitter.com"><i id="social-tw" class="fa fa-twitter-square fa-3x social"></i></a>
+        <a href="https://plus.google.com"><i id="social-gp" class="fa fa-google-plus-square fa-3x social"></i></a>
+        <a href="https://github.com"><i id="social" class="fa fa-github-square fa-3x social-gb"></i></a>
+        <a href="https://www.linkedin.com"> <i id="social" class="fa fa-linkedin-square fa-3x social-li"></i></a>
+      </div>
+      <hr>
+    </footer>
+    <div class="modal fade" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Cargar Archivo</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="cargarArchivo">Cargar Archivo : </label>
+              <input class="form-control" id="cargarArchivo" placeholder="Ruta del Archivo" type="file">  <!--FALTA Bootstrap File Input -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info btn-lg" data-dismiss="modal" id="btnCargar" >Subir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
